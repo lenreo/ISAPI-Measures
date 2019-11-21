@@ -1,0 +1,179 @@
+openapi: 3.0.1
+info:
+  title: GeoCardioBand Measures
+  description: 'API encargada de la gestión de medidas del proyecto GeoCardioBand.'
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: lutevi04@alumnos.unex.es
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+- url: https://www.geocardioband.com/api/v1/measures
+- url: http://www.geocardioband.com/api/v1/measures
+tags:
+- name: medidas
+  description: Gestión de medidas
+  externalDocs:
+    description: Find out more
+    url: http://swagger.io
+paths:  
+  /measures:
+    post:
+      tags:
+      - measure
+      summary: Añadir nueva medida
+      description: Añadir nueva medida
+      operationId: addMeasure
+      requestBody:
+        $ref: '#/components/requestBodies/Measure'
+      responses:
+        200:
+          description: "Operación válida"
+        405:
+          description: "No se pudo validar"
+          content: {}
+        500:
+          description: "Error Interno"
+          content: {}
+      x-codegen-request-body-name: body
+  /measures/findByMagnitude:
+    get:
+      tags:
+      - measure
+      summary: Encuentra medidas por magnitud
+      description: Busca las gráficas que sean de una determinada magnitud
+      operationId: findByMagnitude
+      parameters:
+        - $ref: '#/components/parameters/magnitudeParam'
+      responses:
+        200:
+          description: "Operación válida"
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Measure'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Measure'
+        405:
+          description: "No se pudo validar"
+          content: {}
+      x-codegen-request-body-name: body
+  /measures/findByMagnitudeAndDateRange:
+    get:
+      tags:
+      - measure
+      summary: Encuentra medidas por magnitud y rango de fechas
+      description: Busca las gráficas que sean de una determinada magnitud y en una determinada fecha
+      operationId: findByMagnitudeAndDateRange
+      parameters:
+        - $ref: '#/components/parameters/magnitudeParam'
+        - $ref: '#/components/parameters/startDateParam'
+        - $ref: '#/components/parameters/endDateParam'
+      responses:
+        200:
+          description: "Operación válida"
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Measure'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Measure'
+        405:
+          description: "No se pudo validar"
+          content: {}
+      x-codegen-request-body-name: body
+  /measures/evaluate:
+    get:
+      tags:
+      - measure
+      summary: Evalúa las últimas medidas
+      description: Evalúa las últimas medidas para saber si hay alguna anomalía
+      operationId: evaluate
+      responses:
+        200:
+          description: "Operación válida"
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Resultado'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resultado'
+        405:
+          description: "No se pudo validar"
+          content: {}
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    Id:
+      type: integer
+      format: int64
+    Date:
+      type: string
+      format: date-time
+    Value:
+      type: integer
+      format: int64
+    Measure:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        magnitude:
+          type: integer
+          format: int64
+        timestamp:
+          $ref: '#/components/schemas/Date'
+        value:
+          $ref: '#/components/schemas/Value'
+    Resultado:
+        type: boolean
+  parameters:
+    magnitudeParam: 
+      name: magnitude
+      in: query
+      description: Magnitud de las medidas
+      required: true
+      schema:
+        type: integer
+        format: int64
+    startDateParam:
+      name: startDate
+      in: query
+      description: Fecha de inicio del rango temporal de las medidas
+      required: true
+      schema:
+        $ref: '#/components/schemas/Date'
+    endDateParam:
+      name: endDate
+      in: query
+      description: Fecha de fin del rango temporal de las medidas
+      required: true
+      schema:
+        $ref: '#/components/schemas/Date'
+  requestBodies:
+    Measure:
+      description: Medida
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Measure'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Measure'
+      required: true
