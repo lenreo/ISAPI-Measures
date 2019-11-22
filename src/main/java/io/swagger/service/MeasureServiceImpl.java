@@ -1,21 +1,15 @@
 package io.swagger.service;
 
-import io.swagger.model.Measure;
-
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
-import javax.print.attribute.standard.DateTimeAtCompleted;
-
-import org.threeten.bp.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Calendar;
-
-import org.threeten.bp.OffsetDateTime;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.ZoneOffset;
+
+import io.swagger.model.Measure;
 
 @Service("MeasureService")
 public class MeasureServiceImpl implements MeasureService {
@@ -54,10 +48,37 @@ public class MeasureServiceImpl implements MeasureService {
         }
     }
 
+    private Long generateId(Long magnitude) {
+        if (PULSO.equals(magnitude)) {
+            return Long.valueOf(measuresBpm.size() + 1);
+        } 
+        else if (OXIGENO.equals(magnitude)) {
+            return Long.valueOf(measuresO2.size() + 1);
+        }
+        
+        return null;
+    }
+
    	@Override
     public boolean add(Measure measure) {
         log.info("add: " + measure.toString());
-        return true;
+        
+        boolean result = false;
+        if (null == measure.getId()) {
+            Long id = generateId(measure.getMagnitude());
+            measure.setId(id);
+        }
+        
+        if (null != measure.getId()) {
+	        if (PULSO.equals(measure.getMagnitude())) {
+	            result = measuresBpm.add(measure);
+	        } 
+	        else if (OXIGENO.equals(measure.getMagnitude())) {
+	        	result = measuresO2.add(measure);
+	        }
+        }
+
+        return result;
     }
 
    	@Override
