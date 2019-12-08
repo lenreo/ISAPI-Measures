@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import io.swagger.model.Measure;
 import io.swagger.service.MeasureService;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2019-11-21T19:17:22.578Z[GMT]")
 @Controller
+@EnableAspectJAutoProxy(proxyTargetClass=true) 
 public class MeasuresApiController implements MeasuresApi {
 
     private static final Logger log = LoggerFactory.getLogger(MeasuresApiController.class);
